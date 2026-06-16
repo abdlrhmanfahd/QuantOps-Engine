@@ -1,11 +1,19 @@
 version: '3.8'
 
 services:
+  quant_bot:
+    image: quant-engine:latest
+    container_name: quant_bot
+    env_file:
+      - .env
+    network_mode: "host"
+    restart: unless-stopped
+
   node-exporter:
     image: prom/node-exporter:latest
     container_name: node_exporter
     restart: unless-stopped
-    network_mode: "host" # مهم جداً لقراءة بيانات الخادم الفيزيائي بدقة
+    network_mode: "host" 
 
   prometheus:
     image: prom/prometheus:latest
@@ -31,10 +39,14 @@ services:
   alertmanager:
     image: prom/alertmanager:latest
     container_name: alertmanager
+    network_mode: "host"
+    env_file:
+      - .env
     volumes:
       - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml
     ports:
       - "9093:9093"
     command:
       - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--config.expand-env'
     restart: unless-stopped
