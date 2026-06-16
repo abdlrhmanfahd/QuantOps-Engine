@@ -1,0 +1,35 @@
+
+groups:
+
+- name: quant_alerts
+
+  rules:
+
+  - alert: HighAlpacaLatency
+
+    expr: alpaca_api_latency_seconds > 0.1
+
+    for: 1m
+
+    labels:
+
+      severity: critical
+
+    annotations:
+
+      summary: "High API Latency: {{ $value }}s"
+
+
+
+  - alert: TradeFailed
+
+    expr: alpaca_orders_total{status="failed"} > 0
+
+    labels:
+
+      severity: critical
+
+    annotations:
+
+      summary: "Trade Execution FAILED!"
+

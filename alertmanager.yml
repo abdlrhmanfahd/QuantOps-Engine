@@ -1,0 +1,31 @@
+
+route:
+
+  receiver: 'telegram_bot'
+
+  group_by: ['alertname']
+
+  group_wait: 10s
+
+  group_interval: 1m
+
+  repeat_interval: 1h
+
+
+
+receivers:
+
+- name: 'telegram_bot'
+
+  telegram_configs:
+
+  - bot_token: '${TELEGRAM_BOT_TOKEN}'
+
+    api_url: 'https://api.telegram.org'
+
+    chat_id: 1781467825
+
+    parse_mode: 'HTML'
+
+    message: '🚨 <b>{{ .Status | toUpper }}</b>: {{ .CommonAnnotations.summary }}'
+

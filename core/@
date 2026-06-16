@@ -1,0 +1,65 @@
+import os
+import asyncio
+import logging
+from dotenv import load_dotenv
+from alpaca.data.live import CryptoDataStream
+from alpaca.trading.client import TradingClient
+from alpaca.trading.requests import MarketOrderRequest
+from alpaca.trading.enums import OrderSide, TimeInForce
+
+# إعداد السجلات (Logs)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s'
+)
+
+load_dotenv()
+api_key = os.environ.get('APCA_API_KEY_ID')
+secret_key = os.environ.get('APCA_API_SECRET_KEY')
+
+# العودة لمحرك الكريبتو
+market_feed = CryptoDataStream(api_key, secret_key)
+trading_client = TradingClient(api_key, secret_key, paper=True)
+
+is_cooling_down = False
+
+async def handle_quote(data):
+    global is_cooling_down
+    
+    # حماية من التكرار السريع (التبريد)
+    if is_cooling_down:
+        return
+
+    ask = data.ask_price
+    if ask <= 0:
+        return
+
+    # طباعة بيانات الأصل المستهدف
+    logging.info(f"[DATA TICK] {data.symbol} | Ask: {ask} | Bid: {data.bid_price}")
+    logging.info(f"[TARGET LOCKED] Executing Instant Market Order on {data.symbol}")
+    
+    # أمر سوق لشراء 10 وحدات من التيثر (أثبتنا يدوياً أنه يُنفذ فوراً)
+    market_order = MarketOrderRequest(
+        symbol=data.symbol,
+        qty=10, 
+        side=OrderSide.BUY,
+        time_in_force=TimeInForce.GTC # إلزامي للكريبتو في Alpaca
+    )
+
+    try:
+        order = trading_client.submit_order(order_data=market_order)
+        logging.info(f"[SUCCESS] Order {order.id} sent. Check Alpaca Positions Now!")
+        
+        # تبريد المحرك لدقيقة كاملة لمنع إغراق الخادم بالأوامر
+        is_cooling_down = True
+        await asyncio.sleep(60)
+        is_cooling_down = False
+        
+    except Exception as e:
+        logging.error(f"[FAILED] {data.symbol}: {e}")
+
+# مراقبة USDT/USD فقط لأنه الأصل الوحيد النشط القابل للتنفيذ حالياً
+market_feed.subscribe_quotes(handle_quote, "USDT/USD")
+
+logging.info("Instant Execution Engine Online. Hunting USDT/USD...")
+market_feed.run()

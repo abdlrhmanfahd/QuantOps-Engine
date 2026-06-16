@@ -1,0 +1,15 @@
+2026-06-14 08:21:10,313 [INFO] Quant Engine Online (24/7 Mode). Persistence & Cooldown Active.
+2026-06-14 08:21:10,314 [INFO] started data stream
+2026-06-14 08:21:10,314 [INFO] starting data websocket connection
+2026-06-14 08:21:10,314 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-06-14 08:21:10,348 [INFO] connected to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-06-14 08:21:10,352 [INFO] subscribed to quotes: ['BTC/USD']
+2026-06-14 08:33:23,555 [INFO] Quant Engine Online. Heartbeat Active. Max Spread: 0.15%
+2026-06-14 08:33:23,556 [INFO] started data stream
+2026-06-14 08:33:23,556 [INFO] starting data websocket connection
+2026-06-14 08:33:23,556 [INFO] connecting to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-06-14 08:33:23,594 [INFO] connected to wss://stream.data.alpaca.markets/v1beta3/crypto/us
+2026-06-14 08:33:23,598 [INFO] subscribed to quotes: ['BTC/USD']
+2026-06-14 08:33:39,193 [INFO] [TARGET LOCKED] Spread: 0.1056%
+2026-06-14 08:33:39,232 [INFO] [SUCCESS] Order ID: 99b0ddbd-4630-4da5-92af-5fdb63520160
+2026-06-14 08:33:39,232 [INFO] [COOLDOWN] Execution paused for 60 seconds...
