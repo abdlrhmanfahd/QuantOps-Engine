@@ -5,6 +5,15 @@ set -e
 echo " -- Update the system package -- "
 sudo dnf update -y
 
+echo " -- Low-Latency Network Tuning -- "
+sudo bash -c 'cat << EOF > /etc/sysctl.d/99-quantops.conf
+net.core.default_qdisc=fq
+net.ipv4.tcp_congestion_control=bbr
+net.ipv4.tcp_fin_timeout=15
+net.ipv4.tcp_tw_reuse=1
+EOF'
+sudo sysctl --system
+
 echo " -- Checking if Docker exitst & Try to install it -- "
 
 if ! command -v docker &> /dev/null; then 
