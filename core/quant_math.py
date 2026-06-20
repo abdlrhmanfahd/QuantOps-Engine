@@ -4,7 +4,6 @@ historical_prices = []
 WINDOW = 20
 
 def analyze_tick(current_price):
-    global historical_prices
 
     historical_prices.append(current_price)
 
