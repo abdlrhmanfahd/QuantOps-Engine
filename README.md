@@ -46,6 +46,10 @@ $$Z = \frac{x - \mu}{\sigma}$$
 ![Grafana Dashboard](grafana-sre-telemetry.png)
 *Figure 4: Real-time Grafana SRE dashboard monitoring API latency, order execution status, and live portfolio equity on the AWS EC2 instance.*
 
+### Stochastic Parameter Optimization
+![Stochastic Optimization Surface](stochastic-optimization.png)
+*Figure X: Stochastic optimization matrix mapping Z-Score thresholds and rolling window lookbacks against the Sharpe Ratio, validating parameter robustness and algorithm resistance to curve-fitting.*
+
 ## Deployment
 Deployment is fully containerized and automated. Merges to the `master` branch trigger a GitHub Actions workflow that executes strict linting (`flake8`), authenticates with the AWS EC2 instance via SSH, pulls the latest build, and restarts the execution daemons.
 
