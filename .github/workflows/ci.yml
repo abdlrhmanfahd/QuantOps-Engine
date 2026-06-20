@@ -29,8 +29,6 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
           cd ~/QuantOps
-          # سحب الكود السليم وتجاهل التعديلات المحلية
           git fetch --all
           git reset --hard origin/master
-          # إعادة تشغيل البوت المالي آلياً لتبني الكود الجديد
           sudo docker-compose up -d --build quant_bot
