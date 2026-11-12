@@ -69,6 +69,8 @@ None of them beat buy-and-hold over this period, so the engine runs on **Alpaca 
 ## Deployment
 Deployment is fully containerized and automated. Merges to the `master` branch trigger a GitHub Actions workflow that executes strict linting (`flake8`), authenticates with the AWS EC2 instance via SSH, pulls the latest build, and restarts the execution daemons.
 
+The deploy job runs only when the repository variable `DEPLOY_ENABLED` is set to `true` (with the `SERVER_IP`, `SERVER_USER` and `SERVER_SSH_KEY` secrets configured). The demo EC2 server is currently offline, so pushes run the lint gate and the deploy job is skipped.
+
 ```bash
 # Local execution for testing
 python3 core/market_stream.py
