@@ -1,5 +1,20 @@
+# secrets
 .env
---pycache--/
+
+# python
+__pycache__/
 *.pyc
-.DS_Store
 quant-env/
+.ipynb_checkpoints/
+
+# editors / OS
+*.swp
+*.swo
+*.swn
+*.swm
+.DS_Store
+
+# runtime artefacts
+*.log
+*.tar.gz
+node_exporter-*/

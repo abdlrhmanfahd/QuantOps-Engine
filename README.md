@@ -9,7 +9,7 @@ QuantOps is a Python-based algorithmic trading system designed for automated exe
 - **Language:** Python 3.10+
 - **Market Data & Routing:** Alpaca Trading API (REST & WebSockets)
 - **Design Pattern:** Decoupled architecture separating the mathematical evaluation layer from the execution and routing layer.
-- **Fault Tolerance:** Implemented exponential backoff and retry mechanisms (`MAX_RETRIES=3`) for API rate limits and network transient failures.
+- **Fault Tolerance:** Order submission retries with linear backoff (`RETRY_DELAY × attempt`, `MAX_RETRIES=3`) for API rate limits and transient network failures.
 
 ### 2. Algorithmic Model
 The quantitative layer operates on a standard Mean Reversion model targeting stationary assets. 
@@ -26,7 +26,11 @@ $$Z = \frac{x - \mu}{\sigma}$$
 - **Tracked Metrics:**
   - `alpaca_api_latency_seconds`: Measures API round-trip time.
   - `alpaca_orders_total`: Tracks execution success/failure rates.
+  - `alpaca_order_retries_total`: Counts retry attempts.
   - `alpaca_account_equity_usd`: Monitors account state.
+  - `alpaca_account_pnl_usd`: Tracks today's PnL.
+- **Alerting:** Prometheus rules fire on sustained API latency above 100 ms and on any failed order; Alertmanager routes them to a Telegram bot.
+- **Host Metrics:** `node-exporter` runs alongside the bot for CPU, memory and network telemetry.
 
 ## Visual Analytics & System Performance
 
@@ -50,6 +54,17 @@ $$Z = \frac{x - \mu}{\sigma}$$
 ![Grafana Dashboard](grafana-sre-telemetry.png)
 *Figure 4: Real-time Grafana SRE dashboard monitoring API latency, order execution status, and live portfolio equity on the AWS EC2 instance.*
 
+
+## Research Findings
+The research notebook (`research/backtest_lab.ipynb`) backtests three strategies on AAPL daily bars with $10,000 of simulated capital, against a buy-and-hold benchmark of **+29.73%**:
+
+| Strategy | Return |
+|---|---|
+| SMA 20/50 crossover | -1.66% |
+| RSI + SMA filter | -2.43% |
+| Z-score mean reversion | +1.51% |
+
+None of them beat buy-and-hold over this period, so the engine runs on **Alpaca paper trading only**. The focus of this project is the execution, deployment and observability stack around the strategy, not a claim of profitability.
 
 ## Deployment
 Deployment is fully containerized and automated. Merges to the `master` branch trigger a GitHub Actions workflow that executes strict linting (`flake8`), authenticates with the AWS EC2 instance via SSH, pulls the latest build, and restarts the execution daemons.
